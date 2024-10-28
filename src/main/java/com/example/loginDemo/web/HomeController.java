@@ -1,18 +1,30 @@
 package com.example.loginDemo.web;
 
 
-import lombok.extern.slf4j.Slf4j;
+import com.example.loginDemo.domain.member.Member;
+import com.example.loginDemo.web.session.SessionManager;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-@Slf4j
 @Controller
+@RequiredArgsConstructor
 public class HomeController {
 
-    @GetMapping("/")
-    public String home() {
-        return "home";
-    }
+    private final SessionManager sessionManager;
 
+
+    @GetMapping("/")
+    public String homeLoginV2(HttpServletRequest request, Model model) {
+
+        Member member = (Member) sessionManager.getSession(request);
+        if (member == null) {
+            return "home";
+        }
+
+        model.addAttribute("member", member);
+        return "loginHome";
+    }
 }
