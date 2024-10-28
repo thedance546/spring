@@ -76,7 +76,7 @@ public class LoginController {
 
     //서블릿의 HTTP Session
     @PostMapping("/login")
-    public String loginV3(@Valid @ModelAttribute LoginForm form, BindingResult bindingResult, HttpServletRequest request) {
+    public String loginV3(@Valid @ModelAttribute("LoginForm") LoginForm form, BindingResult bindingResult, HttpServletRequest request) {
         if (bindingResult.hasErrors()) {
             return "login/loginForm";
         }
