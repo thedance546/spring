@@ -4,8 +4,9 @@
   <title>Login Home</title>
 </head>
 <body>
-<h1>Welcome to Login Home</h1>
-<p th:text="'Hello, ' + ${username} + '!'" ></p> <!-- 로그인한 사용자 이름 표시 -->
+<h1>Mart</h1>
+<p th:text="'Welcome, ' + ${userEmail} + '!'"></p> <!-- 로그인한 사용자 이메일 표시 -->
+<a th:href="@{/mypage}">My Page</a> <!-- My Page 링크 -->
 <a th:href="@{/logout}">Logout</a> <!-- 로그아웃 링크 -->
 </body>
 </html>

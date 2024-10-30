@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -16,7 +17,18 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    // 이메일로 사용자 찾기
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email); // 이메일로 사용자 조회
+    }
+
+    @Transactional
     public Long save(UserRequestDto dto){
+
+        // 이메일 중복 확인
+        if (userRepository.findByEmail(dto.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
+        }
         // UserRequestDto에서 User 엔티티로 변환
         User user = User.builder()
                 .email(dto.getEmail())

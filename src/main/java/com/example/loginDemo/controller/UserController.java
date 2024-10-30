@@ -53,9 +53,8 @@ public class UserController {
         // 현재 인증된 사용자 정보 가져오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         // 사용자 이름 가져오기
-        String username = authentication.getName();
-
-        model.addAttribute("username", username);
+        String email = authentication.getName();
+        model.addAttribute("userEmail", email);
         return "loginHome";
     }
 
