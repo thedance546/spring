@@ -2,6 +2,7 @@ package com.example.loginDemo.service;
 
 import com.example.loginDemo.domain.User;
 import com.example.loginDemo.dto.UserRequestDto;
+import com.example.loginDemo.exception.DuplicateEmailException;
 import com.example.loginDemo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -17,7 +18,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    // 이메일로 사용자 찾기
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email); // 이메일로 사용자 조회
     }
@@ -27,16 +27,15 @@ public class UserService {
 
         // 이메일 중복 확인
         if (userRepository.findByEmail(dto.getEmail()).isPresent()) {
-            throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
+            throw new DuplicateEmailException("이미 존재하는 이메일입니다.");
         }
         // UserRequestDto에서 User 엔티티로 변환
         User user = User.builder()
                 .email(dto.getEmail())
-                .name(dto.getName()) // 이름 필드 추가
-                .password(passwordEncoder.encode(dto.getPassword())) // 비밀번호 암호화
+                .name(dto.getName())
+                .password(passwordEncoder.encode(dto.getPassword()))
                 .build();
 
-        // User 엔티티 저장
         return userRepository.save(user).getId();
     }
 

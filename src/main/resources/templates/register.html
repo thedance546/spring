@@ -8,6 +8,12 @@
 <body>
 <div class="container">
     <h2 class="mt-5">회원가입</h2>
+
+    <!-- 오류 메시지 표시 -->
+    <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
     <form th:action="@{/register}" th:object="${userRequest}" method="post">
         <div class="form-group">
             <label for="email">이메일:</label>
@@ -22,6 +28,7 @@
             <input type="password" class="form-control" id="password" th:field="*{password}" required>
         </div>
         <button type="submit" class="btn btn-primary">가입하기</button>
+        <a th:href="@{/}" class="btn btn-secondary">취소</a>
     </form>
 </div>
 </body>

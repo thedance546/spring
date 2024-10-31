@@ -2,6 +2,7 @@ package com.example.loginDemo.config;
 
 import com.example.loginDemo.security.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -27,6 +28,9 @@ import javax.sql.DataSource;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    @Autowired
+    private CustomUserDetailsService service;
+
 
 //    @Bean
 //    public void configure(AuthenticationManagerBuilder builder) {
@@ -46,34 +50,24 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())
-                .formLogin((form)->form
+                .formLogin(form->form
+                        .loginPage("/login")  // 사용자 정의 로그인 페이지 경로
+                        .loginProcessingUrl("/login")  // 로그인 요청을 처리할 URL
                         .defaultSuccessUrl("/loginHome")
                         .failureUrl("/login?error=true")
                         .usernameParameter("email")
                         .passwordParameter("password")
-                        .loginProcessingUrl("/login")
                         .permitAll())
-                .logout((logout) -> logout
-                        .logoutUrl("/logout")  // 로그아웃 URL
-                        .logoutSuccessUrl("/")  // 로그아웃 성공 시 리다이렉트될 URL
-                        .permitAll())
-                .csrf(Customizer.withDefaults());
+                .logout(logout -> logout
+                        .invalidateHttpSession(true)
+                        .logoutUrl("/logout")          // 로그아웃 요청 URL
+                        .logoutSuccessUrl("/")          // 로그아웃 성공 후 리다이렉트할 URL
+                        .permitAll())                   // 모든 사용자에게 로그아웃 허용
+                .csrf(Customizer.withDefaults())
+                .userDetailsService(service);
 
         return http.build();
     }
-
-//    @Bean
-//    UserDetailsManager users(DataSource dataSource) {
-//        UserDetails user = User.builder()
-//                .username("user")
-//                .password("{noop}1")
-//                .roles("USER")
-//                .build();
-//
-//        JdbcUserDetailsManager users = new JdbcUserDetailsManager(dataSource);
-//        users.createUser(user);
-//        return users;
-//    }
 
 
 }
