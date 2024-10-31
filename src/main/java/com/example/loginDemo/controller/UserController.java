@@ -24,8 +24,8 @@ public class UserController {
 
     @GetMapping("/register")
     public String showRegisterForm(Model model){
-        model.addAttribute("userRequest", new UserRequestDto()); // 빈 DTO를 모델에 추가
-        return "register";
+        model.addAttribute("userRequest", new UserRequestDto());
+        return "users/register";
     }
 
     @PostMapping("/register")
@@ -34,29 +34,29 @@ public class UserController {
             userService.save(dto);
         } catch (DuplicateEmailException e) {
             model.addAttribute("errorMessage", e.getMessage());
-            return "register"; //실패시
+            return "users/register"; //실패시
         }
 
-        return "redirect:/login"; //회원가입 성공시
+        return "redirect:/auth/login"; //회원가입 성공시
     }
 
-    @GetMapping("/login")
+    @GetMapping("/auth/login")
     public String showLoginForm(Model model) {
         model.addAttribute("userResponse", new UserResponseDto());
-        return "login";
+        return "/login";
     }
 
 
-    @PostMapping("/login")
-    public String loginUser(@ModelAttribute("userResponse") UserResponseDto dto, Model model) {
-        // 사용자 인증 로직을 추가합니다.
-        if (userService.authenticate(dto.getEmail(), dto.getPassword())) {
-            return "redirect:/loginHome"; // 로그인 성공 시 홈으로 리디렉션
-        } else {
-            model.addAttribute("error", "이메일 또는 비밀번호가 잘못되었습니다."); // 로그인 실패 메시지 추가
-            return "login"; // 로그인 페이지로 다시 이동
-        }
-    }
+//    @PostMapping("/login")
+//    public String loginUser(@ModelAttribute("userResponse") UserResponseDto dto, Model model) {
+//        // 사용자 인증 로직을 추가합니다.
+//        if (userService.authenticate(dto.getEmail(), dto.getPassword())) {
+//            return "redirect:/loginHome"; // 로그인 성공 시 홈으로 리디렉션
+//        } else {
+//            model.addAttribute("error", "이메일 또는 비밀번호가 잘못되었습니다."); // 로그인 실패 메시지 추가
+//            return "login"; // 로그인 페이지로 다시 이동
+//        }
+//    }
 
     @GetMapping("/logout")
     public String logout() {

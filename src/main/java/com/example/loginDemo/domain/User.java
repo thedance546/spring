@@ -11,6 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", updatable = false)
+    @Column(name = "user_id", updatable = false)
     private Long id;
 
     @NotBlank(message = "Name cannot be blank")
@@ -38,11 +39,19 @@ public class User implements UserDetails {
     @Column(name="password", nullable = false)
     private String password;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    private Role role; // Role enum 타입으로 수정
+
+    @OneToMany(mappedBy = "user")
+    private List<Order> orders = new ArrayList<>();
+
     @Builder
-    public User(String name, String email, String password) {
+    public User(String name, String email, String password, Role role) {
         this.name = name;
         this.email = email;
         this.password = password;
+        this.role = role;
     }
 
     @Override
@@ -67,7 +76,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("user"));
+        return List.of(new SimpleGrantedAuthority(role.name())); // Role을 권한으로 반환
     }
 
     @Override

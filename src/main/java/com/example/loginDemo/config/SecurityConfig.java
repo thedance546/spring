@@ -46,15 +46,15 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/","/register","/login").permitAll()
+                        .requestMatchers("/","/register","/auth/login").permitAll()
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(form->form
-                        .loginPage("/login")  // 사용자 정의 로그인 페이지 경로
-                        .loginProcessingUrl("/login")  // 로그인 요청을 처리할 URL
+                        .loginPage("/auth/login")  // 사용자 정의 로그인 페이지 경로
+                        .loginProcessingUrl("/auth/login")  // 로그인 요청을 처리할 URL
                         .defaultSuccessUrl("/loginHome")
-                        .failureUrl("/login?error=true")
+                        .failureUrl("/auth/login?error=true")
                         .usernameParameter("email")
                         .passwordParameter("password")
                         .permitAll())
